@@ -1,0 +1,119 @@
+location: "swedencentral"
+resourceGroup: "contoso-rg"
+virtual_networks:
+  - name: "ingress-hub"
+    address_space: "10.0.0.0/24"    
+    subnets:
+      - name: "waf"
+        address_prefix: "10.0.0.0/26"
+      - name: "AzureFirewallSubnet"
+        address_prefix: "10.0.0.64/26"
+
+  - name: "main-hub"
+    address_space: "10.100.0.0/23"    
+    subnets:
+      - name: "AzureFirewallSubnet"
+        address_prefix: "10.100.0.0/26"
+
+  - name: "online-archetype"
+    address_space: "10.10.0.0/26"    
+    subnets:
+      - name: "inbound"
+        address_prefix: "10.10.0.0/28"
+      - name: "outbound"
+        address_prefix: "10.10.0.16/28"
+        delegation: "Microsoft.Web/serverFarms" 
+  - name: "corporate-archetype"
+    address_space: "10.20.0.0/26"    
+    subnets:
+      - name: "inbound"
+        address_prefix: "10.20.0.0/28"
+      - name: "outbound"
+        address_prefix: "10.20.0.16/28"
+        delegation: "Microsoft.Web/serverFarms" 
+peerings:
+  - name: "corporate-archetype"
+    hub_vnet_name: "main-hub"    
+    spoke_vnet_name: "corporate-archetype"     
+  - name: "online-archetype1"
+    hub_vnet_name: "ingress-hub"          
+    spoke_vnet_name: "online-archetype"     
+  - name: "online-archetype2"
+    hub_vnet_name: "main-hub"     
+    spoke_vnet_name: "online-archetype"     
+  - name: "ingress-hub"
+    hub_vnet_name: "main-hub"
+    spoke_vnet_name: "ingress-hub"
+backend-prefix: "contoso-mapbook"
+route-tables:
+  - name: "waf-rt"
+    subnet: "ingress-hub-waf"
+    routes:
+      - name: "intra-vnet"
+        destination: "10.0.0.0/24"
+        next_hop_type: "VirtualAppliance"
+        next_hop_in_ip_address: "10.0.0.68"
+      - name: "online-spoke1"
+        destination: "10.10.0.0/26"
+        next_hop_type: "VirtualAppliance"
+        next_hop_in_ip_address: "10.0.0.68"
+  - name: "onlinespoke1-rt"
+    subnet: "online-archetype-outbound"
+    routes:
+      - name: "default"
+        destination: "0.0.0.0/0"
+        next_hop_type: "VirtualAppliance"
+        next_hop_in_ip_address: "10.100.0.4"
+
+firewall-policies:
+  - name: "ingresshub-fw-policy"
+    sku: "Standard"
+  - name: "mainhub-fw-policy"  
+    sku: "Standard"
+firewall_rule_collection_groups:
+  OnlineSpoke1EgressApplicationRules:
+    priority: 100
+    target_policy: "mainhub-fw-policy"
+    application_rule_collections:
+      allowedfqdns:
+        priority: 100
+        action: Allow
+        rules:
+          fqdns:
+            protocol_block:
+              - type: Https
+                port: 443
+            source_addresses:
+              - "10.10.0.16/28"
+            source_ip_groups: null
+            destination_urls: null
+            destination_fqdns:
+              - "www.packtpub.com"
+            destination_fqdn_tags: null
+            destination_addresses: null
+            terminate_tls: false
+    network_rule_collections: {}
+    nat_rule_collections: {}
+  ApplicationGatewayApplicationRules:
+    priority: 100
+    target_policy: "ingresshub-fw-policy"
+    application_rule_collections:
+      allowedfqdns:
+        priority: 100
+        action: Allow
+        rules:
+          fqdns:
+            protocol_block:
+              - type: Http
+                port: 80
+            source_addresses:
+              - "10.0.0.0/26"
+            source_ip_groups: null
+            destination_urls: null
+            destination_fqdns:
+              - "contoso-mapbook.azurewebsites.net"
+            destination_fqdn_tags: null
+            destination_addresses: null
+            terminate_tls: false
+    network_rule_collections: {}
+    nat_rule_collections: {}
