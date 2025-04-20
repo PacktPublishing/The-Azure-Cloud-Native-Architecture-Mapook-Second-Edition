@@ -1,0 +1,36 @@
+# here you should deploy the egress controller on top of the service
+apiVersion: v1
+kind: Service
+metadata:  
+  labels:
+    app: tenant1-egressgateway    
+    istio: tenant1-egressgateway    
+  name: tenant1-egressgateway
+  namespace: tenant1-egress    
+spec:
+  ports:
+  - name: sql
+    port: 1433
+    protocol: TCP
+    targetPort: 1433
+  - name: http2
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 8443
+  - name: amqp1
+    port: 5671
+    protocol: TCP
+    targetPort: 5671
+  - name: amqp2
+    port: 5672
+    protocol: TCP
+    targetPort: 5672
+  selector:
+    app: tenant1-egressgateway
+    istio: tenant1-egressgateway
+  sessionAffinity: None
+  type: ClusterIP

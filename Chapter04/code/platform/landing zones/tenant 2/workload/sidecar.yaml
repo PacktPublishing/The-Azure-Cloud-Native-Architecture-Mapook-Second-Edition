@@ -1,0 +1,24 @@
+# only platform team should be able to manipulate sidecar resources
+apiVersion: networking.istio.io/v1
+kind: Sidecar
+metadata:
+  name: restrictSideCarVisibility
+  namespace: tenant1-workload-ns1
+spec:
+  egress:
+  - hosts:      
+    - "istio-system/*"
+    - "tenant1-egress/*"
+    - "*/*.svc.cluster.local" #can be more restrictive but Calico already prevents cross-lz traffic
+---
+apiVersion: networking.istio.io/v1
+kind: Sidecar
+metadata:
+  name: restrictSideCarVisibility
+  namespace: tenant1-workload-ns2
+spec:
+  egress:
+  - hosts:      
+    - "istio-system/*"
+    - "tenant1-egress/*"
+    - "*/*.svc.cluster.local" #can be more restrictive but Calico already prevents cross-lz traffic

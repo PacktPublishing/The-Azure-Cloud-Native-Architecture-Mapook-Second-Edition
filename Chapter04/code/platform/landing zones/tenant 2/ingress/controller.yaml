@@ -1,0 +1,26 @@
+# here you should deploy the ingress controller (tenant2-ingress-gateway) on top of the service
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-ingressgateway
+  namespace: tenant2-ingress  
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-load-balancer-internal-subnet: ingress    
+spec:
+  type: LoadBalancer  
+  loadBalancerIP: <IP from the ingress subnet>
+  externalTrafficPolicy: Local
+  selector:
+    istio: tenant2-ingress-gateway
+  ports:
+  # you might want to remove port 80 but it's good for testing
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
+    - name: status-port
+      port: 15021
+      targetPort: 15021

@@ -1,0 +1,114 @@
+# Deny-All policy ==> very restrictive. Purpose is to gradually open up. Make sure
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: deny-all
+spec:
+  order: 65000
+  selector: projectcalico.org/namespace not in  {'default','istio-system','kube-system', 'calico-system', 'tigera-operator','gatekeeper-system','kube-public','kube-node-lease'}
+  types:
+  - Ingress
+  - Egress
+  ingress:
+  - action: Deny
+  egress:
+  - action: Deny
+---
+# Should always specify the lowest priority.
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: allow-dns
+spec:  
+  order: 1
+  selector: all()
+  types:
+  - Ingress
+  - Egress
+  ingress:
+  - action: Allow
+    protocol: UDP
+    destination:
+      ports:
+      - 53
+  - action: Allow
+    protocol: TCP
+    destination:
+      ports:
+      - 53
+  egress:
+  - action: Allow
+    protocol: UDP
+    destination:
+      ports:
+      - 53
+  - action: Allow
+    protocol: TCP
+    destination:
+      ports:
+      - 53
+---
+# Because Calico Policy plugin (unlike enterprise) does not support FQDNs, we'll rule internet-bound traffic
+# with Istio. Consider as well that there is an NVA in the path.
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: allow-public-egress
+spec:
+  order: 65001
+  selector: all()
+  types:
+  - Egress
+  egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      nets:
+      - 0.0.0.0/0
+      notNets:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+      
+---
+# We allow traffic towards the istio control plane (istiod)
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: allow-istio-system-communication
+spec:
+  selector: all()
+  order: 3
+  types:    
+    - Egress  
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: 'usage == "istio"'      
+        selector: app == 'istiod'
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: 'usage == "istio"'           
+        selector: app == 'istiod'
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: log-all-traffic
+spec:  
+  selector: all()
+  types:
+    - Ingress
+    - Egress
+  ingress:
+    - action: Log
+      source: {}
+      destination: {}
+  egress:
+    - action: Log
+      source: {}
+      destination: {}

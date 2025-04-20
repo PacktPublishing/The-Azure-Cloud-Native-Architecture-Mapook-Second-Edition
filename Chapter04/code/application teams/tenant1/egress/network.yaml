@@ -1,0 +1,19 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: tenant1-sql-egress
+  namespace: tenant1-egress
+spec:    
+  selector: "app == 'tenant1-egressgateway'"
+  order: 10
+  types:   
+  - Egress  
+  egress:    
+    - action: Allow      
+      protocol: TCP
+      destination:        
+        nets:
+          - <SQL DB private endpoint>/32          
+        ports:          
+          - 1433
+---

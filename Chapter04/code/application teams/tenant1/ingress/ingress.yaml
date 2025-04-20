@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin-service
+  namespace: tenant1-ingress
+spec:
+  hosts:
+  - httpbin.tenant1.contoso.com
+  gateways:
+  - httpbin-gateway
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: httpbin.tenant1-workload-ns1.svc.cluster.local
+        port:
+          number: 80
+          #port should be 443 and you should have a certificate that must be trusted by Front Door.
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: httpbin-gateway
+  namespace: tenant1-ingress
+spec:
+  selector:
+    istio: app1-ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+      #protocol should be tls
+    hosts:
+    - httpbin.tenant1.contoso.com
+---
+#optionally, you can add a destinationrule

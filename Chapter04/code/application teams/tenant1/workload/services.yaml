@@ -1,0 +1,61 @@
+# images are pulled from the public Docker Hub registry
+# sample service and busybox client (to test layer-4 and layer-7 policies)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+  namespace: tenant1-workload-ns1
+  labels:
+    app: httpbin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+  template:
+    metadata:
+      labels:
+        app: httpbin
+      annotations:
+        sidecar.istio.io/agentLogLevel: debug
+    spec:
+      containers:
+      - name: httpbin      
+        image: docker.io/kennethreitz/httpbin
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin
+  namespace: tenant1-workload-ns1
+spec:
+  selector:
+    app: httpbin
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-deployment
+  namespace: tenant1-workload-ns1
+spec:
+  selector:
+    matchLabels:
+      app: busybox
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: busybox
+    spec:
+      containers:
+      - name: busybox
+        image: governmentpaas/curl-ssl
+        command: ["/bin/sh"]
+        args: ["-c", "sleep 30d"]
+---

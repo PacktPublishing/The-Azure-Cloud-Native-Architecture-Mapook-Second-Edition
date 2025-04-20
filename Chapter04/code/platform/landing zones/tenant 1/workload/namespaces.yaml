@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace 
+metadata:
+  name: tenant1-workload-ns1
+  labels:
+    tenant: tenant1    
+    istio-injection: enabled
+  annotations:
+    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Equal", "value": "workload", "effect": "NoSchedule", "key": "usage"}]'
+---
+apiVersion: v1
+kind: Namespace 
+metadata:
+  name: tenant1-workload-ns2
+  labels:
+    tenant: tenant1    
+    istio-injection: enabled
+  annotations:
+    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Equal", "value": "workload", "effect": "NoSchedule", "key": "usage"}]'
+---

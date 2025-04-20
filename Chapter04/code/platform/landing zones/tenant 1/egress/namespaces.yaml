@@ -1,0 +1,10 @@
+# Istio egress gateways are not injected with the istio sidecar.
+apiVersion: v1
+kind: Namespace 
+metadata:
+  name: tenant1-egress
+  labels:
+    tenant: tenant1        
+  annotations:
+    scheduler.alpha.kubernetes.io/defaultTolerations: '[{"operator": "Equal", "value": "egress", "effect": "NoSchedule", "key": "usage"}]'
+---

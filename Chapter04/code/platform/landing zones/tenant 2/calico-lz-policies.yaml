@@ -1,0 +1,68 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-traffic
+  namespace: tenant2-ingress
+spec:  
+  selector: all()
+  order: 10
+  types:
+  - Ingress   
+  - Egress 
+  ingress:
+  - action: Allow    
+    source:
+      nets:
+        - <IP range from the ingress hub>
+  egress:
+  - action: Allow    
+    destination:      
+      namespaceSelector: tenant == 'tenant2'  
+---
+# Allow intra-lz traffic
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: allow-intra-lz-traffic
+  namespace: tenant2-egress
+spec:  
+  selector: all()
+  order: 10
+  types:
+  - Ingress    
+  - Egress
+  ingress:
+  - action: Allow
+    source:
+      namespaceSelector: tenant == 'tenant2'          
+  # the egress gateway should be able to communicate with anything
+  egress:
+  - action: Allow
+    destination:      
+      nets: 
+      - 0.0.0.0/0
+      notNets:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+---
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: allow-intra-lz-traffic
+  namespace: tenant2-workload-ns1
+spec:  
+  selector: all()
+  order: 10
+  types:
+  - Ingress
+  - Egress
+  ingress:
+  - action: Allow
+    source:
+      namespaceSelector: tenant == 'tenant2'      
+  egress:
+  - action: Allow
+    destination:      
+      namespaceSelector: tenant == 'tenant2'  
+---

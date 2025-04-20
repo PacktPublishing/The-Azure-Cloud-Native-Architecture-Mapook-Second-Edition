@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: sql-gateway
+  namespace: tenant1-egress
+spec:
+  selector:
+    istio: tenant1-egressgateway
+  servers:
+  - port:
+      number: 1433
+      name: tls
+      protocol: TLS
+    hosts:
+    - <tenant1>.database.windows.net
+    tls:
+      mode: PASSTHROUGH
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: sql-virtual-service
+  namespace: tenant1-egress
+spec:
+  hosts:
+  - <tenant1>.database.windows.net
+  gateways:
+  - mesh
+  - sql-gateway
+  tls:
+  - match:
+    - sniHosts:
+      - <tenant1>.database.windows.net
+      gateways:
+      - mesh
+      port: 1433
+    route:
+    - destination:
+        host: "tenant1-egressgateway.tenant1-egress.svc.cluster.local"
+        port:
+          number: 1433
+  - match:
+    - sniHosts:
+      - <tenant1>.database.windows.net
+      gateways:
+      - sql-gateway
+      port: 1433
+    route:
+    - destination:
+        host: <tenant1>.database.windows.net
+        port:
+          number: 1433
+      weight: 100        
+---
