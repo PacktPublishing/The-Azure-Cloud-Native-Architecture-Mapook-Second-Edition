@@ -10,7 +10,7 @@ terraform {
 }
 provider "azurerm" {
     features {}
-    subscription_id="f63a908a-c054-4d45-a1fd-1eadaee67ffc"
+    subscription_id="<put your id here>"
 }
 module "contoso-rg"{
     source = "./modules/resource-group/"
