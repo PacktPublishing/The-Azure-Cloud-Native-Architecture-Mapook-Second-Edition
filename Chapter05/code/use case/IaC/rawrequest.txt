@@ -1,0 +1,16 @@
+POST https://order.<random>.<location>.azurecontainerapps.io/order
+Content-Type: application/json
+{
+
+        "id": "4aadc0f8-eeda-4ee7-9c26-a6d39cbfbc28",
+        "products": [
+            {
+                "id": "5678f982-2ae4-408c-92ff-6af45118d159",
+                "name": null
+            },
+            {
+                "id": "6678f982-2ae4-408c-92ff-6af45118d159",
+                "name": null
+            }
+        ]
+}

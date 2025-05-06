@@ -1,0 +1,6 @@
+location: "swedencentral"
+resourceGroup: "mapbook-aci"
+subscriptionId: "<your subscription Id>"
+storageAccountName: "<choose a unique name>"
+containerImage: "stephaneey/acihandler:dev"
+# use this image if you didn't build your own

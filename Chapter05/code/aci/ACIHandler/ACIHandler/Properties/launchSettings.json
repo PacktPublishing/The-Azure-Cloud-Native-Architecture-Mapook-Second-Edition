@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ACIHandler": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

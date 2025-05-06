@@ -1,0 +1,10 @@
+#if you run the .ps1, reset the namespace and identity values to <namespace> and <identity> as they
+# are replaced on the fly
+name: daprsb
+componentType: pubsub.azure.servicebus
+version: v1
+metadata:
+- name: namespaceName
+  value: <namespace>
+- name: azureClientId
+  value: <identity>
