@@ -72,14 +72,6 @@ az servicebus topic subscription create `
   --topic-name order.shipped `
   --name foryoutocheck
 
-
-$conn=az servicebus namespace authorization-rule keys list `
-  --resource-group $resourceGroupName `
-  --namespace-name $serviceBusNamespace `
-  --name RootManageSharedAccessKey `
-  --query primaryConnectionString `
-  --output tsv
-
 $yamlPath = "./daprsb.yaml"
 $yamlContent = Get-Content $yamlPath -Raw
 
