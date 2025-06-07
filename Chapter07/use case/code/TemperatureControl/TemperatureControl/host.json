@@ -1,0 +1,17 @@
+{
+    "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": false
+      },
+      "enableLiveMetricsFilters": false
+    },
+    "logLevel": {
+      "default": "Trace",
+      "Host.Aggregator": "Trace",
+      "Host.Results": "Trace",
+      "Function": "Trace"
+    }
+  }
+}

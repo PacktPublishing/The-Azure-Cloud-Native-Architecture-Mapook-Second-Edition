@@ -1,0 +1,5 @@
+set query_results_cache_max_age = time(0s);
+sensordata 
+| where timestamp > ago(5m)
+| summarize avgTemp = avg(temperature) by deviceId, storeId
+| where avgTemp > 8
