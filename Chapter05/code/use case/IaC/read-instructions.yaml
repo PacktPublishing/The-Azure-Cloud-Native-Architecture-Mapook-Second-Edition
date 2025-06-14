@@ -1,0 +1,10 @@
+# The YAML file 'daprsb.yaml' is dynamically updated by the PowerShell script, but it is a one-time operation.
+# If you happen to run the script again, copy and paste the content of this file into 'daprsb.yaml'.
+name: daprsb
+componentType: pubsub.azure.servicebus
+version: v1
+metadata:
+- name: namespaceName
+  value: <namespace>
+- name: azureClientId
+  value: <identity>
