@@ -401,7 +401,7 @@ resource "azapi_resource" "logic_app_storage_role_assignment" {
 
   body = {
     properties = {
-      roleDefinitionId = "/subscriptions/${local.config.subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+      roleDefinitionId = "/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe"
       principalId      = azapi_resource.logic_app.output.identity.principalId
 
 
@@ -417,7 +417,7 @@ resource "azapi_resource" "logic_app_aci_role_assignment" {
 
   body = {
     properties = {
-      roleDefinitionId = "/subscriptions/${local.config.subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/6a453b05-0be6-4b91-95c6-83c209136b3c"
+      roleDefinitionId = "/providers/Microsoft.Authorization/roleDefinitions/6a453b05-0be6-4b91-95c6-83c209136b3c"
       principalId      = azapi_resource.logic_app.output.identity.principalId
 
 
@@ -433,7 +433,7 @@ resource "azapi_resource" "cleanup_logic_app_aci_role_assignment" {
 
   body = {
     properties = {
-      roleDefinitionId = "/subscriptions/${local.config.subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/6a453b05-0be6-4b91-95c6-83c209136b3c"
+      roleDefinitionId = "/providers/Microsoft.Authorization/roleDefinitions/6a453b05-0be6-4b91-95c6-83c209136b3c"
       principalId      = azapi_resource.aci-cleanup.output.identity.principalId
 
 
