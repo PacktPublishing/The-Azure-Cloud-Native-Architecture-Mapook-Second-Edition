@@ -433,7 +433,7 @@ resource "azapi_resource" "cleanup_logic_app_aci_role_assignment" {
 
   body = {
     properties = {
-      roleDefinitionId = "/providers/Microsoft.Authorization/roleDefinitions/6a453b05-0be6-4b91-95c6-83c209136b3c"
+      roleDefinitionId = "/providers/Microsoft.Authorization/roleDefinitions/5d977122-f97e-4b4d-a52f-6b43003ddb4d"
       principalId      = azapi_resource.aci-cleanup.output.identity.principalId
 
 
