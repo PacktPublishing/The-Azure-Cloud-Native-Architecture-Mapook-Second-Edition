@@ -1,0 +1,38 @@
+{
+  "invoiceId": "INV-2025-00123",
+  "invoiceDate": "2025-05-25",
+  "dueDate": "2025-06-24",
+  "customer": {
+    "customerId": "CUST-98765",
+    "name": "Acme Corporation",
+    "address": {
+      "street": "123 Main Street",
+      "city": "Brussels",
+      "postalCode": "1000",
+      "country": "Belgium"
+    },
+    "email": "billing@acme-corp.com"
+  },
+  "items": [
+    {
+      "description": "Consulting Services - April 2025",
+      "quantity": 10,
+      "unitPrice": 150.0,
+      "total": 1500.0
+    },
+    {
+      "description": "Cloud Hosting",
+      "quantity": 1,
+      "unitPrice": 500.0,
+      "total": 500.0
+    }
+  ],
+  "subtotal": 2000.0,
+  "taxRate": 0.21,
+  "taxAmount": 420.0,
+  "totalAmount": 2420.0,
+  "currency": "EUR",
+  "status": "Pending",
+  "paymentMethod": "Bank Transfer",
+  "notes": "Thank you for your business."
+}
